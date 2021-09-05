@@ -7,7 +7,6 @@ require 'socket'
 
 module SocketEvent
   class Error < StandardError; end
-  # Your code goes here...
 
   class Server
     extend Utils
@@ -25,10 +24,11 @@ module SocketEvent
 
       socket_path = build_socket_path(socket_name)
 
-      @server = UNIXServer.new(socket_path)
 
       instance.instance_exec do
         log "#start_and_listen #{socket_path}"
+
+        @server = UNIXServer.new(socket_path)
 
         loop do
           begin
@@ -71,6 +71,7 @@ module SocketEvent
     extend Utils
 
     def self.send_message(socket_name, data)
+      raise("data must be a Hash") unless data.is_a?(Hash)
       socket = UNIXSocket.new(build_socket_path(socket_name))
 
       socket.puts(data.to_s)
